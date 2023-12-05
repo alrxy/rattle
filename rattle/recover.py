@@ -34,31 +34,31 @@ class InternalRecover(object):
 
         self.guarenteed_optimizations()
 
-        if split_functions:
-            self.split_functions(dispatch)
+        # if split_functions:
+        #     self.split_functions(dispatch)
 
-        # Remove stop-only blocks from dispatch
-        blocks_to_remove = []
-        for block in dispatch:
-            if len(block.insns) != 1:
-                continue
+        # # Remove stop-only blocks from dispatch
+        # blocks_to_remove = []
+        # for block in dispatch:
+        #     if len(block.insns) != 1:
+        #         continue
 
-            insn = block.insns[0]
-            if insn.insn.name != 'STOP':
-                continue
+        #     insn = block.insns[0]
+        #     if insn.insn.name != 'STOP':
+        #         continue
 
-            if len(block.in_edges) != 0:
-                continue
+        #     if len(block.in_edges) != 0:
+        #         continue
 
-            if block.fallthrough_edge:
-                continue
+        #     if block.fallthrough_edge:
+        #         continue
 
-            if len(block.jump_edges) != 0:
-                continue
+        #     if len(block.jump_edges) != 0:
+        #         continue
 
-            blocks_to_remove.append(block)
+        #     blocks_to_remove.append(block)
 
-        dispatch.remove_blocks(blocks_to_remove)
+        # dispatch.remove_blocks(blocks_to_remove)
 
     @staticmethod
     def remove_metadata(bytecode: bytes):
@@ -126,22 +126,22 @@ class InternalRecover(object):
                     distance: int = insn.insn.pops
                     item: StackValue = block.stack[-distance]
                     block.stack_push(item)
-                    insn.remove_from_parent()
+                    # insn.remove_from_parent()
                     continue
 
                 if insn.insn.is_swap:
                     distance = insn.insn.pops
                     block.stack[-distance], block.stack[-1] = block.stack[-1], block.stack[-distance]
-                    insn.remove_from_parent()
+                    # insn.remove_from_parent()
                     continue
 
                 if insn.insn.is_pop:
                     block.stack_pop()
-                    insn.remove_from_parent()
+                    # insn.remove_from_parent()
                     continue
 
                 if insn.insn.name == 'JUMPDEST':
-                    insn.remove_from_parent()
+                    # insn.remove_from_parent()
                     continue
 
                 for _ in range(insn.insn.pops):

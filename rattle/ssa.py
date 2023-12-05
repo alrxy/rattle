@@ -223,7 +223,7 @@ class PlaceholderStackValue(StackValue):
                 self.resolving = False
                 return self, False
 
-            self.block.insns.insert(first_non_phi_index, phi_insn)
+            # self.block.insns.insert(first_non_phi_index, phi_insn)
             phi_insn.return_value = self.block.function.new_placeholder_value()
             self.resolving = False
             return phi_insn.return_value, True
@@ -349,7 +349,7 @@ class SSAInstruction(object):
 
         if len(self.return_value.readers()) == 0:
             self.clear_arguments()
-            self.remove_from_parent()
+            # self.remove_from_parent()
         elif len(self.arguments) == 0:
             for reader in list(self.return_value.readers()):
                 if isinstance(reader.insn, PHIInstruction):
@@ -358,8 +358,8 @@ class SSAInstruction(object):
                 else:
                     raise PHIRemovalException("Removing argument from non-PHI")
 
-            if len(self.return_value.readers()) == 0:
-                self.remove_from_parent()
+            # if len(self.return_value.readers()) == 0:
+            #     self.remove_from_parent()
 
         else:
             # Maybe we can remove args from phi function that has a CALLDATALOAD(0) user/reader as arg
@@ -375,7 +375,7 @@ class SSAInstruction(object):
         """Returns True if its remove phi function, otherwise returns False"""
         if all(self.arguments[0] == rest for rest in self.arguments):
             arg = self.arguments[0]
-            self.remove_from_parent()
+            # self.remove_from_parent()
             self.clear_arguments()
 
             for reader in list(self.return_value.readers()):
@@ -404,10 +404,10 @@ class SSAInstruction(object):
         self.clear_arguments()
 
         # Remove from parent, but this could be called several times
-        try:
-            self.remove_from_parent()
-        except:
-            pass
+        # try:
+        #     self.remove_from_parent()
+        # except:
+        #     pass
 
     def add_comment(self, comment: str) -> None:
         self.comment = comment
