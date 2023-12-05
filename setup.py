@@ -1,5 +1,8 @@
 from setuptools import setup
 
+with open('requirements.txt') as f:
+    required = f.read().splitlines()
+
 setup(
     name='rattle',
     version='0.1',
@@ -9,8 +12,6 @@ setup(
     author_email='',
     license='MIT',
     packages=['rattle'],
-    install_requires=[
-        # List of dependencies, e.g., 'numpy', 'pandas', etc.
-    ],
+    install_requires=required,
     zip_safe=False
 )
