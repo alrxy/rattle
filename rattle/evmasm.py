@@ -75,7 +75,12 @@ class EVMAsm(object):
 
 
             '''
+            if opcode == 0x5f:
+                operand_size = 1
+                operand = 0
+                
             super().__init__(opcode, name, operand_size, pops, pushes, fee, description, operand, pc)
+            
             if operand_size != 0 and operand is not None:
                 mask = (1 << operand_size * 8) - 1
                 if ~mask & operand:
