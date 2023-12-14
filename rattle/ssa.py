@@ -74,7 +74,7 @@ class StackValue(object):
         except:
             pass
 
-    def resolve(self) -> Tuple['StackValue', bool]:
+    def resolve(self, depth) -> Tuple['StackValue', bool]:
         return (self, False)
 
     def filtered_readers(self, filt: Callable[['SSAInstruction'], bool]) -> Set['SSAInstruction']:
@@ -139,11 +139,11 @@ class PlaceholderStackValue(StackValue):
     def __hash__(self) -> int:
         return hash((self.sp, self.block))
 
-    def resolve(self) -> Tuple[StackValue, bool]:
+    def resolve(self, depth) -> Tuple[StackValue, bool]:
         # Resolve!
         # print(f"Resolving placeholder {self}")
 
-        if self.resolving:
+        if self.resolving or depth == 0:
             self.resolving = False
             return self, False
 
@@ -169,7 +169,7 @@ class PlaceholderStackValue(StackValue):
                 return self, False
 
             if isinstance(new_slot, PlaceholderStackValue):
-                rv = new_slot.resolve()
+                rv = new_slot.resolve(depth - 1)
                 self.resolving = False
                 return rv
 
@@ -196,7 +196,7 @@ class PlaceholderStackValue(StackValue):
                 edge_stack: List[StackValue] = edge.stack
                 try:
                     new_slot = edge_stack[self.sp]
-                    new_slot, _ = new_slot.resolve()  # Resolve it as far as you can
+                    new_slot, _ = new_slot.resolve(depth - 1)  # Resolve it as far as you can
                 except IndexError:
                     ''' 
                     Parent block doesn't have enough stack slots so i guess it should go higher up the call stack,
@@ -335,7 +335,7 @@ class SSAInstruction(object):
     def resolve_arguments(self) -> bool:
         dirty = False
         for i, arg in enumerate(list(self.arguments)):
-            a, update = arg.resolve()
+            a, update = arg.resolve(20)
             if update:
                 dirty = True
                 # print(f"Replacing argument: {arg} with {a}")
