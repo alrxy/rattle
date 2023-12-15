@@ -198,7 +198,7 @@ class InternalRecover(object):
 
             terminator: SSAInstruction = block.insns[-1]
 
-            if terminator.insn.name == "JUMPI" or not terminator.insn.is_terminator:
+            if terminator.insn.name == "JUMPI" or (not terminator.insn.is_terminator and terminator.offset + terminator.insn.size < max_pc):
                 block.set_fallthrough_target(terminator.offset + terminator.insn.size)
 
     def repopulate_blocks(self, function: SSAFunction) -> None:
